@@ -201,11 +201,14 @@
       for(i = 0; i < objList.length; i++) {
         obj = objList[i];
 
+        if(obj.logicTick) obj.logicTick(obj, deltaTime);
+
         modelViewMatrix = mat4.create();
         mat4.translate(modelViewMatrix, modelViewMatrix, [-0.0, 0.0, -6.0]);
-        mat4.translate(modelViewMatrix, modelViewMatrix, obj.translation);
         mat4.rotate(modelViewMatrix, modelViewMatrix, cubeRotation, [0, 0, 1]);
         mat4.rotate(modelViewMatrix, modelViewMatrix, cubeRotation * .7, [0, 1, 0]);
+        mat4.translate(modelViewMatrix, modelViewMatrix, obj.translation);
+        if(obj.rotation) mat4.rotate(modelViewMatrix, modelViewMatrix, obj.rotAngle, obj.rotation);
 
         normalMatrix = mat4.create();
         mat4.invert(normalMatrix, modelViewMatrix);
@@ -297,9 +300,20 @@
       objList = []
       objList[0] = initBuffers(gl);
       objList[1] = initBuffers(gl);
+      objList[2] = initBuffers(gl);
+      objList[3] = initBuffers(gl);
       
       objList[0].translation = [ 2.0, 0.0, 0.0];
       objList[1].translation = [-2.0, 0.0, 0.0];
+      objList[2].translation = [ 0.0, 2.0, 0.0];
+      objList[2].rotation =    [ 0.0, 0.5, 0.0];
+      objList[2].rotAngle =    0.5;
+      objList[2].logicTick = function(obj, dt) {
+        obj.rotAngle += dt;
+      };
+
+      objList[3].translation = [ 0.0,-2.0, 0.0];
+
 
       var then = 0;
 
